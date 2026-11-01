@@ -61,7 +61,7 @@ struct HomeView: View {
                 HeaderView(isCreatePost: $isTapCreatePost)
                     .padding(.horizontal)
             }
-            .sheet(isPresented: $isTapCreatePost) {
+            .fullScreenCover(isPresented: $isTapCreatePost) {
                 CreateFeedView()
                     .presentationDetents([.fraction(0.73)])
                     .interactiveDismissDisabled(true)

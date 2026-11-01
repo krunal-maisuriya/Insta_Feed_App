@@ -99,6 +99,7 @@ struct TiltCardView: View {
                 HStack(spacing: 25) {
                     HStack(spacing: 5) {
                         Image(systemName: "heart")
+                            .font(.system(size: 19, weight: .semibold))
                             .onTapGesture {
                                 
                             }
@@ -108,18 +109,14 @@ struct TiltCardView: View {
                             .font(.system(size: 14, weight: .bold))
                     }
                     
-                    HStack(spacing: 5) {
-                        Image(systemName: "bubble")
-                            .onTapGesture {
-                                
-                            }
+                    Image(systemName: "bubble")
+                        .font(.system(size: 19, weight: .semibold))
+                        .onTapGesture {
                         
-                        Text("1")
-                            .padding(.vertical, 10)
-                            .font(.system(size: 14, weight: .bold))
-                    }
+                        }
                     
-                    Image(systemName: "paperplane")
+                    Image(systemName: "arrowshape.turn.up.right")
+                        .font(.system(size: 19, weight: .semibold))
                         .onTapGesture {
                             
                         }
@@ -127,6 +124,7 @@ struct TiltCardView: View {
                     Spacer()
                     
                     Image(systemName: "bookmark")
+                        .font(.system(size: 19, weight: .semibold))
                         .onTapGesture {
                             
                         }

@@ -60,7 +60,6 @@ struct CreateFeedView: View {
                             }
                         })
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
                         .padding(.horizontal)
                         .padding(.vertical)
                     }
