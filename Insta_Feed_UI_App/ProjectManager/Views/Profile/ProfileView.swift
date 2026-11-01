@@ -109,7 +109,6 @@ struct ProfileView: View {
                     ToolbarItem(placement: .principal) {
                         Text("My Profile")
                             .font(.system(size: 18, weight: .semibold))
-//                            .foregroundStyle(theme.colorScheme == .light ? .black : .white)
                     }
                 }
             }
@@ -118,7 +117,6 @@ struct ProfileView: View {
     
     private var dividerHorizontal: some View {
         Rectangle()
-//            .fill(theme.whiteBlackIconColor.opacity(0.15))
             .opacity(0.15)
             .frame(height: 1)
             .padding(.vertical, 10)

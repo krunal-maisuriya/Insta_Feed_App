@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileHeaderView: View {
+    @AppStorage("avatarIcon") private var avatarIcon = "person.fill"
+
     @Environment(\.appTheme) private var theme
     @Environment(\.appColorTheme) private var colorTheme
     
@@ -21,10 +23,10 @@ struct ProfileHeaderView: View {
                     .fill(colorTheme.selected.gradient)
                     .frame(width: 85, height: 85)
                     .overlay {
-                        Image(systemName: "inset.filled.pano")
+                        Image(systemName: avatarIcon)
                             .resizable()
                             .scaledToFill()
-                            .foregroundStyle(theme.colorScheme == .dark ? .black : .white)
+                            .foregroundStyle(.white)
                             .frame(width: 30, height: 30)
                     }
                 
