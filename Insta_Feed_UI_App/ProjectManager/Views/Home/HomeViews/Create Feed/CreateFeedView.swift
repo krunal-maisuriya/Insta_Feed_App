@@ -56,7 +56,7 @@ struct CreateFeedView: View {
                                     .scaledToFit()
                                     .frame(width: 25, height: 25)
                                 
-                                Text("Add Photos")
+                                Text("Add a photo")
                             }
                         })
                         .font(.system(size: 17, weight: .semibold))

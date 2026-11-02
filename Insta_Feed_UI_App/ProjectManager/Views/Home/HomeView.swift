@@ -11,6 +11,9 @@ struct HomeView: View {
     @Environment(\.appTheme) private var theme
     @Environment(\.appColorTheme) private var colorTheme
     
+    @State private var feedViewModel = FeedViewModel()
+    
+    
     @State private var isShowTooltip: Bool = false
     @State private var selectedIndex: Int? = nil
     
@@ -27,8 +30,9 @@ struct HomeView: View {
                         
 //                         StoriesView()
                         
-                        ForEach(0..<6) { index in
-                            TiltCardView()
+                        ForEach(Array(feedViewModel.posts.enumerated()), id: \.element.id) { index, post in
+                            
+                            TiltCardView(post: .constant(post))
                                 .padding(.horizontal, 15)
                                 .onTapGesture {
                                     withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
@@ -61,6 +65,9 @@ struct HomeView: View {
                 HeaderView(isCreatePost: $isTapCreatePost)
                     .padding(.horizontal)
             }
+            .task {
+                await feedViewModel.fetchPosts()
+            }
             .fullScreenCover(isPresented: $isTapCreatePost) {
                 CreateFeedView()
                     .presentationDetents([.fraction(0.73)])
@@ -69,7 +76,6 @@ struct HomeView: View {
             }
         }
     }
-    
 }
 
 #Preview {

@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct TiltCardView: View {
+    @Binding var post: FeedPost
+    
     @Environment(\.appColorTheme) private var colorTheme
     
     @State private var dragX: CGFloat = 0.0
@@ -55,16 +57,21 @@ struct TiltCardView: View {
                         }
                     
                     VStack(alignment: .leading) {
-                        Text("Your Name")
+                        Text(post.userName ?? "Your Name")
                             .font(.system(size: 17, weight: .bold))
-                        HStack {
-                            Text("@yourusername")
-                                .font(.system(size: 13, weight: .medium))
-                            
-                            Text("· Just now")
-                                .font(.system(size: 13, weight: .medium))
-                        }
-                        .opacity(0.7)
+                        
+                        Text("Just now")
+                            .font(.system(size: 13, weight: .medium))
+                            .opacity(0.7)
+
+//                        HStack {
+//                            Text("@yourusername")
+//                                .font(.system(size: 13, weight: .medium))
+//                            
+//                            Text("· Just now")
+//                                .font(.system(size: 13, weight: .medium))
+//                        }
+//                        .opacity(0.7)
                     }
                     
                     Spacer()
@@ -79,7 +86,7 @@ struct TiltCardView: View {
                         }
                 }
                                 
-                Text("Hello, some description ")
+                Text(post.description)
                     .font(.system(size: 15, weight: .regular))
                     .padding(.vertical, 5)
 
@@ -104,7 +111,7 @@ struct TiltCardView: View {
                                 
                             }
                         
-                        Text("0")
+                        Text("\(post.likesCount)")
                             .padding(.vertical, 10)
                             .font(.system(size: 14, weight: .bold))
                     }
@@ -138,7 +145,18 @@ struct TiltCardView: View {
 
 
 #Preview {
-    TiltCardView()
+    TiltCardView(
+        post: .constant(
+            FeedPost(
+                id: UUID(),
+                description: "Building beautiful interfaces with Liquid Glass and 3D effects",
+                userName: "",
+                imageURL: "",
+                createdAt: "",
+                likesCount: 0
+            )
+        )
+    )
 }
 
 
