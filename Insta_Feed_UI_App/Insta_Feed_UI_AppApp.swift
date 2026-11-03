@@ -26,6 +26,7 @@ struct Insta_Feed_UI_AppApp: App {
         AppColorTheme(rawValue: appColorTheme) ?? .cyan
     }
     
+    @State private var feedViewModel = FeedViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -33,6 +34,7 @@ struct Insta_Feed_UI_AppApp: App {
                 .tint(selectedTheme.accent)
                 .environment(\.appTheme, AppTheme(colorScheme: currentColorScheme))
                 .environment(\.appColorTheme, AppThemeStyle(selected: selectedTheme))
+                .environment(feedViewModel)
                 .preferredColorScheme(appearance.colorScheme)
         }
     }

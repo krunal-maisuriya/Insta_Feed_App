@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ActivityStatsView: View {
+    @Environment(FeedViewModel.self) private var feedViewModel
+    
     @Environment(\.appTheme) private var theme
     @Environment(\.appColorTheme) private var colorTheme
 
@@ -20,7 +22,7 @@ struct ActivityStatsView: View {
             VStack {
                 HStack(alignment: .center) {
                     //  Posts
-                    activityItem(icon: "long.text.page.and.pencil", count: "0", title: "Posts", color: .green)
+                    activityItem(icon: "long.text.page.and.pencil", count: "\(feedViewModel.posts.count)", title: "Posts", color: .green)
                     
                     dividerVertical
                     
@@ -61,11 +63,9 @@ struct ActivityStatsView: View {
                 
             Text(count)
                 .font(.system(size: 25, weight: .bold))
-//                .foregroundStyle(theme.colorScheme == .dark ? .white : .black)
             
             Text(title)
                 .font(.system(size: 17, weight: .regular))
-//                .foregroundStyle(theme.colorScheme == .dark ? .white.opacity(0.65) : .black.opacity(0.65))
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -75,7 +75,6 @@ struct ActivityStatsView: View {
     private var dividerVertical: some View {
         Rectangle()
             .opacity(0.15)
-//            .fill(theme.whiteBlackIconColor.opacity(0.15))
             .frame(width: 1)
             .padding(.vertical, 10)
     }

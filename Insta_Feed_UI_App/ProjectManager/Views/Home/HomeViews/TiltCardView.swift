@@ -60,9 +60,10 @@ struct TiltCardView: View {
                         Text(post.userName ?? "Your Name")
                             .font(.system(size: 17, weight: .bold))
                         
-                        Text("Just now")
-                            .font(.system(size: 13, weight: .medium))
-                            .opacity(0.7)
+                        Text(post.createdAt?.toDateString(outputFormat: "dd MMM yyyy . HH:mm a") ?? "")
+//                        Text("Just now")
+                            .font(.system(size: 12, weight: .medium))
+                            .opacity(0.5)
 
 //                        HStack {
 //                            Text("@yourusername")

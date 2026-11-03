@@ -11,7 +11,7 @@ struct HomeView: View {
     @Environment(\.appTheme) private var theme
     @Environment(\.appColorTheme) private var colorTheme
     
-    @State private var feedViewModel = FeedViewModel()
+    @Environment(FeedViewModel.self) private var feedViewModel
     
     
     @State private var isShowTooltip: Bool = false
@@ -30,9 +30,7 @@ struct HomeView: View {
                         ProgressView("Loading posts...")
                     }
                     else if let error = feedViewModel.errorMessage {
-//                    else if feedViewModel.errorMessage != "" {
                         ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle", description: Text(error))
-//                        ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle", description: Text(feedViewModel.errorMessage ?? ""))
                     }
                     else if feedViewModel.posts.isEmpty {
                         ContentUnavailableView("No Posts", systemImage: "text.bubble", description: Text("Create your first post!"))
@@ -40,7 +38,7 @@ struct HomeView: View {
                     else {
                         ScrollView(showsIndicators: false) {
                             LazyVStack(alignment: .leading, spacing: 24) {
-        //                         StoriesView()
+                                 StoriesView()
                                 
                                 ForEach(Array(feedViewModel.posts.enumerated()), id: \.element.id) { index, post in
                                     
