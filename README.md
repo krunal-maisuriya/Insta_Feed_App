@@ -27,6 +27,12 @@ Users can:
 * Fetch all posts from the backend.
 * Display posts dynamically in the SwiftUI feed interface.
 
+## 🎥 App Demo
+Watch the Insta Feed iOS application in action:
+
+
+
+
 ## 🛠️ Technology Stack
 ### iOS Application
 * **Language**: Swift
