@@ -27,12 +27,12 @@ struct ContentView: View {
                         Text("Home")
                     }
                 
-                FavouriteView()
-                    .tag(AppTab.favourite)
-                    .tabItem {
-                        Image(systemName: "heart")
-                        Text("Favourite")
-                    }
+//                FavouriteView()
+//                    .tag(AppTab.favourite)
+//                    .tabItem {
+//                        Image(systemName: "heart")
+//                        Text("Favourite")
+//                    }
                 
                 ProfileView()
                     .tag(AppTab.profile)

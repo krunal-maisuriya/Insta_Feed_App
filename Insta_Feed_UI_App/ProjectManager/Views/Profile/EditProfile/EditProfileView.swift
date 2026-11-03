@@ -112,7 +112,7 @@ struct EditProfileView: View {
                             .foregroundStyle(.white)
                     }
                     .frame(height: 55)
-                    .background(ColorLineView())
+                    .background(CustomLineColorView())
                     .overlay {
                         Capsule().stroke(.white.opacity(0.35), lineWidth: 1)
                     }
