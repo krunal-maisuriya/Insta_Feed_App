@@ -30,8 +30,7 @@ Users can:
 ## 🎥 App Demo
 Watch the Insta Feed iOS application in action:
 
-
-
+[▶ Watch Insta Feed App Demo](https://github.com/krunal-maisuriya/Insta_Feed_App/releases/download/v1.0-demo/Screen.Recording.iPhone.17.03-11-2026.at.12.43.52.PM.mp4)
 
 ## 🛠️ Technology Stack
 ### iOS Application
