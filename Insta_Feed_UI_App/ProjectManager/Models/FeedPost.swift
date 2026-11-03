@@ -15,3 +15,10 @@ struct FeedPost: Codable, Identifiable {
     let createdAt: String?
     let likesCount: Int
 }
+
+
+struct CreatePostRequest: Encodable {
+    let description: String
+    let userName: String?
+    let imageURL: String?
+}

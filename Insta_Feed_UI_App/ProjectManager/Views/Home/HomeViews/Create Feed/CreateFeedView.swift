@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CreateFeedView: View {
+    @Bindable var feedViewModel: FeedViewModel
+    
     @Environment(\.appColorTheme) private var colorTheme
     @Environment(\.dismiss) var dismiss
 
@@ -74,12 +76,27 @@ struct CreateFeedView: View {
                     .padding(.top, 30)
                                     
                     Button {
-                        print("Button tapped")
+                        Task {
+                            await feedViewModel.createPost(description: description, userName: "Krunal Maisuriya", imageURL: "https://example.com/image.jpg")
+                            
+                            if feedViewModel.errorMessage == nil {
+                                dismiss()
+                            }
+                        }
                     } label: {
-                        Text("Create Post")
-                            .font(.system(size: 19, weight: .bold))
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(.white)
+                        HStack {
+                            Spacer()
+                            
+                            if feedViewModel.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("Create Post")
+                                    .font(.system(size: 19, weight: .bold))
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundStyle(.white)
+                            }
+                            Spacer()
+                        }
                     }
                     .frame(height: 55)
                     .background(ColorLineView())
@@ -88,6 +105,7 @@ struct CreateFeedView: View {
                     }
                     .buttonStyle(.plain)
                     .padding(.vertical, 20)
+                    .disabled(description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || feedViewModel.isLoading)
                 }
                 .padding(.horizontal)
                 .padding(.vertical)
@@ -98,7 +116,7 @@ struct CreateFeedView: View {
 }
 
 #Preview {
-    CreateFeedView()
+    CreateFeedView(feedViewModel: FeedViewModel())
 }
 
 

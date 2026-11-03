@@ -25,41 +25,55 @@ struct HomeView: View {
                 theme.viewBackgroundColor
                     .ignoresSafeArea()
 
-                ScrollView(showsIndicators: false) {
-                    LazyVStack(alignment: .leading, spacing: 24) {
-                        
-//                         StoriesView()
-                        
-                        ForEach(Array(feedViewModel.posts.enumerated()), id: \.element.id) { index, post in
-                            
-                            TiltCardView(post: .constant(post))
-                                .padding(.horizontal, 15)
-                                .onTapGesture {
-                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                        selectedIndex = index
-                                        isShowTooltip = true
-                                        print("isShowTooltip -->", isShowTooltip)
-                                    }
-                                }
-                                .popover(isPresented: Binding(
-                                    get: { isShowTooltip && selectedIndex == index },
-                                    set: { isPresented in
-                                        if !isPresented && selectedIndex == index {
-                                            isShowTooltip = false
-                                            selectedIndex = nil
+                Group {
+                    if feedViewModel.isLoading {
+                        ProgressView("Loading posts...")
+                    }
+                    else if let error = feedViewModel.errorMessage {
+//                    else if feedViewModel.errorMessage != "" {
+                        ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle", description: Text(error))
+//                        ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle", description: Text(feedViewModel.errorMessage ?? ""))
+                    }
+                    else if feedViewModel.posts.isEmpty {
+                        ContentUnavailableView("No Posts", systemImage: "text.bubble", description: Text("Create your first post!"))
+                    }
+                    else {
+                        ScrollView(showsIndicators: false) {
+                            LazyVStack(alignment: .leading, spacing: 24) {
+        //                         StoriesView()
+                                
+                                ForEach(Array(feedViewModel.posts.enumerated()), id: \.element.id) { index, post in
+                                    
+                                    TiltCardView(post: .constant(post))
+                                        .padding(.horizontal, 15)
+                                        .onTapGesture {
+                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                                selectedIndex = index
+                                                isShowTooltip = true
+                                                print("isShowTooltip -->", isShowTooltip)
+                                            }
                                         }
-                                    }), arrowEdge: .bottom
-                                ) {
-                                    TiltTooltipView {
-                                        isShowTooltip = false
-                                        selectedIndex = nil
-                                    }
-                                    .presentationCompactAdaptation(.popover)
+                                        .popover(isPresented: Binding(
+                                            get: { isShowTooltip && selectedIndex == index },
+                                            set: { isPresented in
+                                                if !isPresented && selectedIndex == index {
+                                                    isShowTooltip = false
+                                                    selectedIndex = nil
+                                                }
+                                            }), arrowEdge: .bottom
+                                        ) {
+                                            TiltTooltipView {
+                                                isShowTooltip = false
+                                                selectedIndex = nil
+                                            }
+                                            .presentationCompactAdaptation(.popover)
+                                        }
                                 }
+                            }
+                            .padding(.top, 90)
+                            .padding(.bottom, 24)
                         }
                     }
-                    .padding(.top, 90)
-                    .padding(.bottom, 24)
                 }
                 
                 HeaderView(isCreatePost: $isTapCreatePost)
@@ -68,8 +82,11 @@ struct HomeView: View {
             .task {
                 await feedViewModel.fetchPosts()
             }
+            .refreshable {
+                await feedViewModel.fetchPosts()
+            }
             .fullScreenCover(isPresented: $isTapCreatePost) {
-                CreateFeedView()
+                CreateFeedView(feedViewModel: feedViewModel)
                     .presentationDetents([.fraction(0.73)])
                     .interactiveDismissDisabled(true)
                     .animation(.spring(), value: isTapCreatePost)

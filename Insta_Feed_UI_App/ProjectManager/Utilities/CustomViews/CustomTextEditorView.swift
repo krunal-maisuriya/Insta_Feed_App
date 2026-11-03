@@ -24,7 +24,6 @@ struct CustomTextEditorView: View {
                 }
                 
                 TextEditor(text: $text)
-                    .foregroundStyle(.white)
                     .scrollContentBackground(.hidden)
                     .background(.clear)
             }

@@ -22,12 +22,36 @@ final class FeedViewModel {
     // MARK: - Fetch Posts
     func fetchPosts() async {
         isLoading = true
-        errorMessage = ""
+        errorMessage = nil
         
         defer { isLoading = false }
-        
+                
         do {
             posts = try await service.fetchPosts()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: - Create Post
+    func createPost(description: String, userName: String, imageURL: String?) async {
+        
+        let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !trimmedDescription.isEmpty else {
+            errorMessage = "Description cannot be empty."
+            return
+        }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        defer { isLoading = false }
+                
+        do {
+            let newPost = try await service.createPost(description: description, userName: userName, imageURL: imageURL)
+            posts.insert(newPost, at: 0)
+            
         } catch {
             errorMessage = error.localizedDescription
         }

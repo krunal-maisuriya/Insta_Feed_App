@@ -38,4 +38,33 @@ final class APIService {
         
         return posts
     }
+    
+    
+    // MARK: - Create Posts
+    func createPost(description: String, userName: String?, imageURL: String?) async throws -> FeedPost {
+        guard let url = URL(string: "\(baseURL)/api/posts") else {
+            throw URLError(.badURL)
+        }
+        
+        let requestBody = CreatePostRequest(description: description, userName: userName, imageURL: imageURL)
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(requestBody)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+        
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let post = try JSONDecoder().decode(FeedPost.self, from: data)
+        
+        return post
+    }
 }
