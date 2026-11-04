@@ -20,5 +20,5 @@ struct FeedPost: Codable, Identifiable {
 struct CreatePostRequest: Encodable {
     let description: String
     let userName: String?
-    let imageURL: String?
+    let imageData: Data?
 }

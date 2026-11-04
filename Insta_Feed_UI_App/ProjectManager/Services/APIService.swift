@@ -41,17 +41,50 @@ final class APIService {
     
     
     // MARK: - Create Posts
-    func createPost(description: String, userName: String?, imageURL: String?) async throws -> FeedPost {
+    func createPost(description: String, userName: String?, imageData: Data?) async throws -> FeedPost {
         guard let url = URL(string: "\(baseURL)/api/posts") else {
             throw URLError(.badURL)
         }
-        
-        let requestBody = CreatePostRequest(description: description, userName: userName, imageURL: imageURL)
+                
+        let boundary = UUID().uuidString
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(requestBody)
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        var body = Data()
+        
+        func append(_ string: String) {
+            body.append(Data(string.utf8))
+        }
+        
+        append("--\(boundary)\r\n")
+        append("Content-Disposition: form-data; name=\"description\"\r\n")
+        append("Content-Type: text/plain; charset=utf-8\r\n\r\n")
+        append("\(description)\r\n")
+
+        append("--\(boundary)\r\n")
+        append("Content-Disposition: form-data; name=\"userName\"\r\n")
+        append("Content-Type: text/plain; charset=utf-8\r\n\r\n")
+        append("\(userName ?? "")\r\n")
+        
+        if let imageData, !imageData.isEmpty {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"image\"; filename=\"post.jpg\"\r\n")
+            append("Content-Type: image/jpeg\r\n\r\n")
+            body.append(imageData)
+            append("\r\n")
+        }
+        
+        // End boundary
+        append("--\(boundary)--\r\n")
+        
+        request.httpBody = body
+        
+        print("Multipart boundary:", boundary)
+        print("Request body size:", body.count)
+        print("Image attached:", imageData != nil)
+
         
         let (data, response) = try await URLSession.shared.data(for: request)
         

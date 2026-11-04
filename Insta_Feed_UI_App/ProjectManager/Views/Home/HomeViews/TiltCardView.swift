@@ -60,7 +60,7 @@ struct TiltCardView: View {
                         Text(post.userName ?? "Your Name")
                             .font(.system(size: 17, weight: .bold))
                         
-                        Text(post.createdAt?.toDateString(outputFormat: "dd MMM yyyy . HH:mm a") ?? "")
+                        Text(post.createdAt?.toDateString(outputFormat: "dd MMM yyyy . hh:mm a") ?? "")
 //                        Text("Just now")
                             .font(.system(size: 12, weight: .medium))
                             .opacity(0.5)
@@ -95,12 +95,41 @@ struct TiltCardView: View {
                     .fill(colorTheme.gradient.opacity(0.2))
                     .frame(height: 180)
                     .overlay {
-                        Image("image1")
-                            .resizable()
-                            .scaledToFill()
+                        
+                        if let imageURL = post.imageURL, !imageURL.isEmpty {
+                            AsyncImage(url: URL(string: post.imageURL ?? "")) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                    
+                                case .failure:
+                                    Image("image1")
+                                        .resizable()
+                                        .scaledToFill()
+                                    
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
                             .frame(height: 180)
                             .frame(maxWidth: .infinity)
                             .clipShape(RoundedRectangle(cornerRadius: 25))
+                        }
+                        else {
+                            RoundedRectangle(cornerRadius: 25)
+                                .fill(colorTheme.gradient.opacity(0.2))
+                                .frame(height: 180)
+                                .overlay {
+                                    Image(systemName: "text.alignleft")
+                                        .font(.largeTitle)
+                                        .foregroundStyle(.secondary)
+                                }
+                        }
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 25))
                 

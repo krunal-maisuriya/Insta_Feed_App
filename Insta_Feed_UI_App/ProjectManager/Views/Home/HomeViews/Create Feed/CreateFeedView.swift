@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct CreateFeedView: View {
     @Bindable var feedViewModel: FeedViewModel
@@ -15,7 +16,11 @@ struct CreateFeedView: View {
 
     @State private var description: String = ""
     @State private var descriptionError: String? = nil
-
+    
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImage: UIImage?
+    
+    
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: false) {
@@ -49,21 +54,47 @@ struct CreateFeedView: View {
                         .scrollContentBackground(.hidden)
                         .clipShape(RoundedRectangle(cornerRadius: 25))
                             
-                        Button(action: {
-                            
-                        }, label: {
-                            HStack(alignment: .center) {
-                                Image(systemName: "photo.badge.plus")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25)
+                        PhotosPicker(selection: $selectedItem, matching: .images) {
+                            if let selectedImage {
+                                HStack {
+                                    Image(uiImage: selectedImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 80, height: 80)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                        .overlay(alignment: .topTrailing) {
+                                            Button {
+                                                selectedItem = nil
+//                                                selectedImage = nil
+                                            } label: {
+                                                Image(systemName: "xmark")
+                                                    .padding(8)
+                                                    .font(.system(size: 16, weight: .bold))
+                                                    .foregroundStyle(.white)
+                                                    .background(Circle().fill(.black.opacity(0.8)))
+
+                                            }.offset(x: 10, y: -5)
+                                        }
+                                    
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical)
                                 
-                                Text("Add a photo")
+                            } else {
+                                HStack(alignment: .center) {
+                                    Image(systemName: "photo.badge.plus")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 25, height: 25)
+                                    
+                                    Text("Add a photo")
+                                }
+                                .font(.system(size: 17, weight: .semibold))
+                                .padding(.horizontal)
+                                .padding(.vertical)
                             }
-                        })
-                        .font(.system(size: 17, weight: .semibold))
-                        .padding(.horizontal)
-                        .padding(.vertical)
+                        }
                     }
                     .background {
                         RoundedRectangle(cornerRadius: 25)
@@ -77,12 +108,8 @@ struct CreateFeedView: View {
                                     
                     Button {
                         Task {                            
-                            await feedViewModel.createPost(
-                                description: description,
-                                userName: "Krunal Maisuriya",
-                                imageURL: "https://example.com/image.jpg"
-                            )
-                            
+                            await createFeedPost()
+
                             if feedViewModel.errorMessage == nil {
                                 dismiss()
                             }
@@ -116,6 +143,42 @@ struct CreateFeedView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
+        .onChange(of: selectedItem) { _, newItem in
+            Task {
+                await loadSelectedImage(from: newItem)
+            }
+        }
+    }
+    
+    //  Create Feed Post API Call
+    private func createFeedPost() async {
+        
+        let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
+        
+        await feedViewModel.createPost(
+            description: description,
+            userName: "Krunal Maisuriya",
+            imageData: imageData
+        )
+    }
+    
+    // Load Selected Image
+    private func loadSelectedImage(from item: PhotosPickerItem?) async {
+        guard let item else {
+            selectedImage = nil
+            return
+        }
+        
+        do {
+            guard let imageData = try await item.loadTransferable(type: Data.self),
+                    let image = UIImage(data: imageData) else {
+                return
+            }
+            
+            selectedImage = image
+        } catch {
+            print("Image selection error:", error.localizedDescription)
+        }
     }
 }
 

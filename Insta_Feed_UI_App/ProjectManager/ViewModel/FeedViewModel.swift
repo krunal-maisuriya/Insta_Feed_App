@@ -34,7 +34,7 @@ final class FeedViewModel {
     }
     
     // MARK: - Create Post
-    func createPost(description: String, userName: String, imageURL: String?) async {
+    func createPost(description: String, userName: String, imageData: Data?) async {
         
         let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -49,9 +49,8 @@ final class FeedViewModel {
         defer { isLoading = false }
                 
         do {
-            let newPost = try await service.createPost(description: description, userName: userName, imageURL: imageURL)
+            let newPost = try await service.createPost(description: description, userName: userName, imageData: imageData)
             posts.insert(newPost, at: 0)
-            
         } catch {
             errorMessage = error.localizedDescription
         }
